@@ -48,7 +48,7 @@ async function addParticipant() {
         await businessNetworkConnection.connect('admin@supsi-tiforma');
         let participantRegistry = await businessNetworkConnection.getParticipantRegistry('ch.supsi.Student');
         let factory = businessNetworkConnection.getFactory();
-        let participant = factory.newResource('net.biz', 'Student', '12345ABC');
+        let participant = factory.newResource('ch.supsi', 'Student', '12345ABC');
         participant.name = 'Mae';
         participant.surname = 'Smith';
         participant.birthday="2019-05-16T00:00:00.0Z";
