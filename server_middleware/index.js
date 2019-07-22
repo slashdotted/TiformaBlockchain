@@ -20,6 +20,61 @@ async function getParticipant(name){
         process.exit(1);
     }
 }
+
+//GET PARTICIPANT BY ID
+async function getParticipantById(name,id) {
+    try{
+        let businessNetworkConnection = new BusinessNetworkConnection();
+        const businessNetworkDefinition=  await businessNetworkConnection.connect('admin@supsi-tiforma');
+        
+        let participantRegistry = await businessNetworkConnection.getParticipantRegistry('ch.supsi.'+name);
+        let participant= await participantRegistry.get(id);
+        console.log(JSON.stringify(participant));
+        await businessNetworkConnection.disconnect();
+    }catch(error) {
+        console.error(error);
+        process.exit(1);
+    }
+  
+}
+
+//UPDATE PARTICIPANT
+async function updateParticipant(name,id,data) {
+    try{
+        let businessNetworkConnection = new BusinessNetworkConnection();
+        const businessNetworkDefinition=  await businessNetworkConnection.connect('admin@supsi-tiforma');
+        
+        let participantRegistry = await businessNetworkConnection.getParticipantRegistry('ch.supsi.'+name);
+        
+        var factory = getFactory();
+        //update the changes
+        var participant=JSON.parse(data);
+        participantRegistry.update(participant);
+        await businessNetworkConnection.disconnect();
+    }catch(error) {
+        console.error(error);
+        process.exit(1);
+    }
+}
+
+async function removeParticipant(name,id) {
+    try{
+        let businessNetworkConnection = new BusinessNetworkConnection();
+        const businessNetworkDefinition=  await businessNetworkConnection.connect('admin@supsi-tiforma');
+        
+        let participantRegistry = await businessNetworkConnection.getParticipantRegistry('ch.supsi.'+name);
+        let participant= await participantRegistry.get(id);
+        participantRegistry.remove(participant);
+        await businessNetworkConnection.disconnect();
+    }catch(error) {
+        console.error(error);
+        process.exit(1);
+    }
+  
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
 //GET ASSET
 async function getAsset(name){
     try{
@@ -41,38 +96,15 @@ async function getAsset(name){
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-/*GET ALL CERTIFICATION*/
-async function getCertifications(){
+//GET ASSET BY ID
+async function getAssetById(name,id) {
     try{
         let businessNetworkConnection = new BusinessNetworkConnection();
         const businessNetworkDefinition=  await businessNetworkConnection.connect('admin@supsi-tiforma');
-
-        let certificationRegistry = await businessNetworkConnection.getAssetRegistry('ch.supsi.Certification');
-
-        let certifications= await certificationRegistry.getAll();
-
-        certifications.forEach(certification => {
-            console.log(certification.grade);
-        });
-
-        await businessNetworkConnection.disconnect();
-        }catch(error) {
-        console.error(error);
-        process.exit(1);
-    }
-}
-/*GET ALL CERTIFICATION{ID}*/
-async function getCertificationById(id) {
-    try{
-        let businessNetworkConnection = new BusinessNetworkConnection();
-        const businessNetworkDefinition=  await businessNetworkConnection.connect('admin@supsi-tiforma');
-
-        let certificationRegistry = await businessNetworkConnection.getAssetRegistry('ch.supsi.Certification');
-        let certification= await certificationRegistry.get(id);
-        console.log(certification.grade);
+        
+        let assetRegistry = await businessNetworkConnection.getAssetRegistry('ch.supsi.'+name);
+        let asset= await assetRegistry.get(id);
+        console.log(JSON.stringify(asset));
         await businessNetworkConnection.disconnect();
     }catch(error) {
         console.error(error);
@@ -81,8 +113,46 @@ async function getCertificationById(id) {
   
 }
 
-/*CREATE A NEW CERTIFICATE */
-async function addStudent() {
+//UPDATE ASSET
+async function updateAsset(name,id,data) {
+    try{
+        let businessNetworkConnection = new BusinessNetworkConnection();
+        const businessNetworkDefinition=  await businessNetworkConnection.connect('admin@supsi-tiforma');
+        
+        let assetRegistry = await businessNetworkConnection.getAssetRegistry('ch.supsi.'+name);
+        
+        var factory = getFactory();
+        //update the changes
+        var asset=JSON.parse(data);
+        assetRegistry.update(asset);
+        await businessNetworkConnection.disconnect();
+    }catch(error) {
+        console.error(error);
+        process.exit(1);
+    }
+}
+//REMOVE ASSET
+async function removeAsset(name,id) {
+    try{
+        let businessNetworkConnection = new BusinessNetworkConnection();
+        const businessNetworkDefinition=  await businessNetworkConnection.connect('admin@supsi-tiforma');
+        
+        let assetRegistry = await businessNetworkConnection.getAssetRegistry('ch.supsi.'+name);
+        let asset= await assetRegistry.get(id);
+        assetRegistry.remove(asset);
+        await businessNetworkConnection.disconnect();
+    }catch(error) {
+        console.error(error);
+        process.exit(1);
+    }
+  
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+/*CREATE A NEW CERTIFICATE 
+async function addCertificate() {
     let businessNetworkConnection = new BusinessNetworkConnection();
 
     try {
@@ -90,51 +160,14 @@ async function addStudent() {
         let participantRegistry = await businessNetworkConnection.getAssetRegistry('ch.supsi.Certification');
         var factory = definition.getFactory();
         var participant = factory.newResource('ch.supsi', 'Certification', '12345ABCZS');
-        /*participant.name = 'Mae';
-        participant.surname = 'Smith';
-        participant.birthday=new Date("2019-05-16T00:00:00.0Z");
-        participant.nationality="swiss";
-        participant.statute="Immatricolato";
-        participant.serialNumber= "12345567"
-        await participantRegistry.add(participant);*/
         await businessNetworkConnection.disconnect();
     } catch(error) {
         console.error(error);
         process.exit(1);
     }
 }
-/*GET ALL STUDENTS */
-async function getStudents(){
-    try{
-        let businessNetworkConnection = new BusinessNetworkConnection();
-        const businessNetworkDefinition=  await businessNetworkConnection.connect('admin@supsi-tiforma');
-        let studentRegistry = await businessNetworkConnection.getParticipantRegistry('ch.supsi.Student');
-        let students= await studentRegistry.getAll();
-        students.forEach(student => {
-            console.log(student.contactID);
-        });
-        await businessNetworkConnection.disconnect();
-    }catch(error) {
-        console.error(error);
-        process.exit(1);
-    }
-}
-/* GET STUDENT{ID}*/
-async function getStudentById() {
-    try{
-        let businessNetworkConnection = new BusinessNetworkConnection();
-        const businessNetworkDefinition=  await businessNetworkConnection.connect('admin@supsi-tiforma');
-        let studentRegistry = await businessNetworkConnection.getParticipantRegistry('ch.supsi.Student');
-        let student= await studentRegistry.get('obcfqho9k9nfnjvwkskdg');
-        console.log(student.name);
-        await businessNetworkConnection.disconnect();
-    }catch(error) {
-        console.error(error);
-        process.exit(1);
-    }
-  
-}
-/*CREATE A NEW STUDENT */
+
+CREATE A NEW STUDENT 
 async function addStudent() {
     let businessNetworkConnection = new BusinessNetworkConnection();
 
@@ -157,62 +190,6 @@ async function addStudent() {
     }
 }
 
-
-
-/*GET ALL COURSES */
-async function getCourses(){
-    try{
-        let businessNetworkConnection = new BusinessNetworkConnection();
-        const businessNetworkDefinition=  await businessNetworkConnection.connect('admin@supsi-tiforma');
-
-        let courseRegistry = await businessNetworkConnection.getAssetRegistry('ch.supsi.Course');
-        let courses= await courseRegistry.getAll();
-        courses.forEach(course => {
-            console.log(course.name);
-        });
-        await businessNetworkConnection.disconnect();
-    }catch(error) {
-        console.error(error);
-        process.exit(1);
-    }
-}
-/* GET COURSE{ID}*/
-async function getStudentById() {
-    try{
-        let businessNetworkConnection = new BusinessNetworkConnection();
-        const businessNetworkDefinition=  await businessNetworkConnection.connect('admin@supsi-tiforma');
-        let studentRegistry = await businessNetworkConnection.getParticipantRegistry('ch.supsi.Student');
-        let student= await studentRegistry.get('obcfqho9k9nfnjvwkskdg');
-        console.log(student.name);
-        await businessNetworkConnection.disconnect();
-    }catch(error) {
-        console.error(error);
-        process.exit(1);
-    }
-  
-}
-/*CREATE A NEW COURSE */
-async function addStudent() {
-    let businessNetworkConnection = new BusinessNetworkConnection();
-
-    try {
-        const definition=await businessNetworkConnection.connect('admin@supsi-tiforma');
-        let participantRegistry = await businessNetworkConnection.getParticipantRegistry('ch.supsi.Student');
-        var factory = definition.getFactory();
-        var participant = factory.newResource('ch.supsi', 'Student', '12345ABCZS');
-        participant.name = 'Mae';
-        participant.surname = 'Smith';
-        participant.birthday=new Date("2019-05-16T00:00:00.0Z");
-        participant.nationality="swiss";
-        participant.statute="Immatricolato";
-        participant.serialNumber= "12345567"
-        await participantRegistry.add(participant);
-        await businessNetworkConnection.disconnect();
-    } catch(error) {
-        console.error(error);
-        process.exit(1);
-    }
-}
 //addStudent();
 //addStudent();
 //getStudents();
@@ -220,4 +197,11 @@ async function addStudent() {
 //getCertificationById();
 //getCourses();
 //getParticipant('Student');
-getAsset('Course');
+//getAsset('Course');
+//getAsset('Certification');
+//getParticipantById('Student','icsio9ji9jr6kz43gxh6iu');
+//getAssetById('Course','tfc8sh9bwtqtnieu2ugp');
+
+//TODO: per l'add capire come fare
+*/
+
