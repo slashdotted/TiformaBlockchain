@@ -1,8 +1,13 @@
 var express = require('express');
 var http = require('http');
 var bodyParser = require('body-parser');
+var cors=require('cors');
+var upload=require('./upload');
+
+
 var app = express();
 app.use(bodyParser.json());
+app.use(cors());
 var endpoint = 'http://localhost:3000/api';
 
 
@@ -75,6 +80,7 @@ app.delete('/[a-zA-Z]+/[0-9a-zA-Z]+', function (req, res) {
 
 // Esegue le transazioni custom create passandoli un elemento JSON, esempio http://localhost:3000/api/CreateStudent
 app.post('/[a-zA-Z]+', function (req, res) {
+    console.log('richiesta è avvenuta');
     var options = {
         host: 'localhost',
         path: endpoint + req.originalUrl,
@@ -98,4 +104,15 @@ app.post('/[a-zA-Z]+', function (req, res) {
         });
     };
     http.request(options, callback).end(JSON.stringify(req.body));
+});
+
+//Esegue l'upload dei file come foto e allegati url prende /contactID/upload/nomefile.estensione
+app.post('/[a-zA-Z0-9]+/upload',upload);
+//Permette di scaricare un file precedentemente caricato
+app.get('/[a-zA-Z0-9]+/download/[a-zA-Z]+\.[a-zA-Z]+',function (request,response){
+    console.log('Entered');
+    var arrayURL=request.originalUrl.split('/');
+    var filename=arrayURL[arrayURL.length-1];
+    var contactID=req.originalUrl.split('/')[1];
+    response.sendFile(__dirname+'/uploads/'+contactID+'/' +filename);  
 });
