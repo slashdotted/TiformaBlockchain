@@ -39,6 +39,7 @@ export class StudentNewComponent implements OnInit {
     comment: '',
     transactionId: '',
     studyPlan: 'resource:ch.supsi.StudyPlan#NULL',
+    attachments: []
   };
 
   constructor(

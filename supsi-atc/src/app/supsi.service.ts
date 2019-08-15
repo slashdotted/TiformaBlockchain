@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 export class SUPSIService {
 
   // Endpoint di base per tutti i link, generato da Hyperledger
-  private endpoint = 'http://localhost:3000/api/';
+  private endpoint = 'http://localhost:8080/';
 
   constructor(private http: HttpClient) { }
 
@@ -33,7 +33,10 @@ export class SUPSIService {
 
   // Esegue le transazioni custom create passandoli un elemento JSON, esempio http://localhost:3000/api/CreateStudent
   operationToElement(type: String, elementData) {
-    return this.http.post(this.endpoint + type, elementData);
+    const formData = new FormData();
+    formData.append('file', elementData);
+    let typo=type.split('/')[1];
+    if(typo==="Upload")    return this.http.post(this.endpoint + type,formData);
+    return this.http.post(this.endpoint + type,elementData);
   }
-
 }

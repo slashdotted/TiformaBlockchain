@@ -31,6 +31,18 @@ export class StudentsService {
     return this.supsiService.operationToElement("Update" + this.base, studentData);
   }
 
+  deleteAttachment(filename,id){
+    return this.supsiService.getElements(id+"/Delete/"+filename);
+  }
+  
+  uploadAttachment(file,id){
+    return this.supsiService.operationToElement(id+"/Upload",file);
+  }
+
+  downloadFile(filename,id){
+    return this.supsiService.getElements(id+"/Download/"+filename)
+  }
+
   getStudyPlans(){
     return this.supsiService.getElements("StudyPlan");
   }

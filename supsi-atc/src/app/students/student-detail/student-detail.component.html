@@ -244,10 +244,37 @@
       <textarea [(ngModel)]="studentData.comment" class="form-control" id="comment"></textarea>
     </div>
   </div>
+  <div class="form-row">
+    <div class="form-group col-md-12">
+      <label>Allegati</label>
+      <div [(ngModel)]="studentData.attachments" id="attachments">
+        <div *ngFor="let a of studentData.attachments ">
+            <!--<span class="col material-icons" id="downloadIcon" >cloud_download</span>
+            http://localhost:8080/{{studentData.id}}/Delete/{{a}}-->
+            
+              <div class="btn btn-outline-danger " id="deleteAttachmentButton" (click)="deleteAttachment(a)">Elimina</div>
+              <a href="http://localhost:8080/{{studentData.id}}/Download/{{a}}" download class="col-md-12">{{a}}</a>
+            
+            
+            
+            
+            
+          </div>
+      </div>
+  </div>
+  <div class="form-group">
+      <label for="file">Choose File</label>
+      <input type="file"
+             id="file"
+             (change)="uploadFile($event.target.files)" multiple>
+  </div>
   <div class="btn-group" id="buttonGroup">
     <button (click)="updateStudent()" type="submit" class="btn btn-outline-success" id="saveButton">Salva</button>
-    <button (click)="deleteStudent()" type="button" class="btn btn-outline-danger mr-5" id="deleteButton">Elimina</button>
+    <button (click)="deleteStudent()" type="button" class="btn btn-outline-danger" id="deleteButton">Elimina</button>
     <div class="col material-icons" id="printIcon" (click)="printDetail()">print</div>
+   
+   
   </div>
 </div>
+
 <app-loading *ngIf="loading"></app-loading>

@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Student, StudyPlan } from 'src/app/ch.supsi';
 import { StudentsService } from '../students.service';
+import { UploadModule } from '../../upload/upload.module'
 
 @Component({
   selector: 'app-student-detail',
@@ -12,6 +13,8 @@ export class StudentDetailComponent implements OnInit {
   
   // Variabile che permette di caricare il componente loading -> rotellina che gira
   private loading: boolean;
+
+  private upload:boolean;
 
   // Studente selezionato dalla lista di sinistra
   private student: Student;
@@ -42,7 +45,9 @@ export class StudentDetailComponent implements OnInit {
     statute: '',
     serialNumber: '',
     comment: '',
-    studyPlan: 'resource:ch.supsi.StudyPlan#NULL'
+    studyPlan: 'resource:ch.supsi.StudyPlan#NULL',
+    attachments: [],
+    id:''
   };
 
   // Oggetto per l'eliminazione dello Studente
@@ -59,6 +64,7 @@ export class StudentDetailComponent implements OnInit {
 
   ngOnInit() {
     this.loading = false;
+    this.upload=false;
     this.studyplans = {};
 
     this.route.params.subscribe((parms: any) => {
@@ -84,7 +90,9 @@ export class StudentDetailComponent implements OnInit {
           this.studentData.serialNumber = this.student.serialNumber;
           this.studentData.comment = this.student.comment;
           this.studentData.studyPlan = this.student.studyPlan;
-
+          this.studentData.attachments = this.student.attachments;
+          this.studentData.id=this.student.contactID;
+          console.log(this.studentData.id);
           this.studentDataToDelete.student = 'resource:ch.supsi.Student#'+this.route.snapshot.params['id'];
         });
       }
@@ -122,7 +130,26 @@ export class StudentDetailComponent implements OnInit {
   setBirthday(event){
     this.studentData.birthday = $("#birthday").val();
   }
+  // Metodo per uploudare i file
+  uploadFile(files) {
+    for(let file of files){
+      //console.log(file);
+      //console.log(this.student.contactID);
+      this.studentsService.uploadAttachment(file,this.student.contactID).subscribe();
+    }
+  }
 
+  // Metodo per scaricare i file precedentemente caricati
+  downloadFile(filename){
+    this.studentsService.downloadFile(filename,this.student.contactID).subscribe();
+  }
+ 
+  // Metodo per eliminare i file precedentemente caricati
+  deleteAttachment(filename){
+    this.studentsService.deleteAttachment(filename, this.student.contactID).subscribe();
+    
+    window.location.reload();
+  }
   // Metodo per la stampa 
   printDetail(): void {
     let printContents, popupWin;

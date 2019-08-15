@@ -3,7 +3,7 @@ import { Module, Department, Course } from 'src/app/ch.supsi';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModulesService } from '../modules.service';
 import { CoursesService } from 'src/app/courses/courses.service';
-import { element } from '@angular/core/src/render3';
+
 
 @Component({
   selector: 'app-module-detail',

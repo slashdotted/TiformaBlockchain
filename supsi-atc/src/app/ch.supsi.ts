@@ -24,6 +24,7 @@ export abstract class Contact extends Participant {
    surname: string;
    birthday: Date;
    nationality: string;
+   attachments: string[];
 }
 export class Student extends Contact {
    statute: string;

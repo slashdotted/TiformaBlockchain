@@ -9,19 +9,23 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { ContainerComponent } from './container/container.component';
 import { LoadingModule } from './loading/loading.module';
 
+import { UploadModule } from './upload/upload.module';
+import { LoginComponent } from './login/login.component'
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavbarComponent,
-    ContainerComponent
+    NavbarComponent, 
+    ContainerComponent, LoginComponent,
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     FormsModule,
     AppRoutingModule,
-    LoadingModule
+    LoadingModule,
+    UploadModule
   ],
   providers: [],
   bootstrap: [AppComponent]
