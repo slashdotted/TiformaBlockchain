@@ -3,6 +3,8 @@ var http = require('http');
 var bodyParser = require('body-parser');
 var cors=require('cors');
 var upload=require('./upload');
+const fs = require('fs');
+var accessToken='?access_token=yvB5imJivOSf5gIHr6a0J1cVSwF6LWK9ppfIfxNUAMcpjPbnvve9KsmMUXzt7gfJ';
 
 
 var app = express();
@@ -107,12 +109,68 @@ app.post('/[a-zA-Z]+', function (req, res) {
 });
 
 //Esegue l'upload dei file come foto e allegati url prende /contactID/upload/nomefile.estensione
-app.post('/[a-zA-Z0-9]+/upload',upload);
+app.post('/[a-zA-Z0-9]+/Upload',upload);
 //Permette di scaricare un file precedentemente caricato
-app.get('/[a-zA-Z0-9]+/download/[a-zA-Z]+\.[a-zA-Z]+',function (request,response){
+app.get('/[a-zA-Z0-9]+/Download/[a-zA-Z]+\.[a-zA-Z]+',function (request,response){
     console.log('Entered');
     var arrayURL=request.originalUrl.split('/');
     var filename=arrayURL[arrayURL.length-1];
-    var contactID=req.originalUrl.split('/')[1];
+    var contactID=request.originalUrl.split('/')[1];
     response.sendFile(__dirname+'/uploads/'+contactID+'/' +filename);  
+});
+
+app.get('/[a-zA-Z0-9]+/Delete/[a-zA-Z]+\.[a-zA-Z]+',function(request,response){
+    console.log("Starting remove operation");
+    var arrayURL=request.originalUrl.split('/');
+    var filename=arrayURL[arrayURL.length-1];
+    var contactID=request.originalUrl.split('/')[1];
+    //rimuovere file dal disco del server
+    const pathFileToDelete=__dirname+"/uploads/"+contactID+"/"+filename;
+    try{
+        fs.unlinkSync(pathFileToDelete); //file removed
+        http.get(endpoint + "/Student/"+contactID, (resServer) => {
+            resServer.setEncoding('utf8');
+            resServer.on('data', function (chunk) {
+              var student=JSON.parse(chunk);
+              if(student.attachments.indexOf(filename)!=-1){
+               
+                student.attachments.splice(student.attachments.indexOf(filename),1);
+                
+              }
+              
+              var options = {
+                host: 'localhost',
+                path: endpoint + "/Student/"+contactID,
+                port: 3000,
+                method: 'PUT',
+                "headers": { 
+                    "Content-Type" : "application/json",
+                  }
+            };
+            
+            var callback = function (response) {
+                var str = '';
+        
+                //another chunk of data has been recieved, so append it to `str`
+                response.on('data', function (chunk) {
+                    str += chunk;
+                });
+        
+                //the whole response has been recieved, so we just print it out here
+                response.on('end', function () {
+                   
+                });
+            };
+            http.request(options, callback).end(JSON.stringify(student));
+    
+            });
+        });
+        response.status(200).send();
+    }catch(err){
+        console.log(err);
+        response.status(400).send();
+    }
+
+    //aggiornare il rest server eliminando il nome
+    
 });

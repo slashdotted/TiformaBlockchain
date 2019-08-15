@@ -3,18 +3,23 @@ var fs= require('fs');
 var http = require('http');
 var endpoint = 'http://localhost:3000/api';
 
+
 //questa funzione verrà chiamata come callback alla funzione upload dentro server.js
 module.exports = function upload(req,res){
-    //console.log('Upload process executing');
-    var filename="";
+    console.log('Upload process executing');
+    var filename=req.body.name;
     var contactID= req.originalUrl.split('/')[1];
-    console.log(contactID);
+    console.log(req.body);
     if (!fs.existsSync('./uploads/'+contactID)){
         fs.mkdirSync('./uploads/'+contactID);
     }
+
+    
     var form=new IncomingForm();
     console.log('Upload process executing');
+
     form.on('file',(field,file)=> {
+        
         //TODO: process to save the file inside a db (directory inside our server system)
         filename=file.name;
         fs.copyFile(file.path,'./uploads/'+contactID+'/'+file.name,(err)=>{
@@ -30,9 +35,10 @@ module.exports = function upload(req,res){
         resServer.on('data', function (chunk) {
           var student=JSON.parse(chunk);
           if(student.attachments.indexOf(filename)==-1){
-            student.attachments.push(filename); //errore
+              console.log(filename);
+            student.attachments.push(filename); 
           }
-          console.log(student);
+          
           var options = {
             host: 'localhost',
             path: endpoint + "/Student/"+contactID,
@@ -42,6 +48,7 @@ module.exports = function upload(req,res){
                 "Content-Type" : "application/json",
               }
         };
+        
         var callback = function (response) {
             var str = '';
     
@@ -52,7 +59,7 @@ module.exports = function upload(req,res){
     
             //the whole response has been recieved, so we just print it out here
             response.on('end', function () {
-                console.log(str);
+               console.log(str);
             });
         };
         http.request(options, callback).end(JSON.stringify(student));
@@ -66,4 +73,5 @@ module.exports = function upload(req,res){
         res.status(200).send();
     });
     form.parse(req);
+    
 }
