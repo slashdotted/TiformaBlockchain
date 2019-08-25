@@ -1,3 +1,28 @@
-<p>
-  login works!
-</p>
+<br>
+<div class="col-sm-12 my-auto">
+  <div class="container bg-light">
+    <br>
+    <form class="form-signin">
+      <div class="form-label-group">
+        <label for="email">Email</label>
+        <input [(ngModel)]='user.username' id="email" type="email" class="form-control" placeholder="Enter Email"
+          [ngModelOptions]="{standalone: true}">
+      </div>
+      <div class="form-label-group">
+        <label for="password">Password</label>
+        <input [(ngModel)]='user.password' id="password" type="password" class="form-control" placeholder="Password"
+          [ngModelOptions]="{standalone: true}">
+      </div>
+      <br>
+      <h6 *ngIf="error" class= "bg-danger text-white">Errore: email/password sono sbagliati</h6>
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <button class="btn btn-primary" (click)='login()'>Login</button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <br>
+  </div>
+</div>

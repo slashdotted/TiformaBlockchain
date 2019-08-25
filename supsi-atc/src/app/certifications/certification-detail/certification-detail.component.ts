@@ -18,8 +18,8 @@ export class CertificationDetailComponent implements OnInit {
   private loading: boolean;
 
   @Input() certificationData: any = {
-    $class: 'ch.supsi.UpdateCertification',
-    oldCertification: 'resource:ch.supsi.Certification#',
+    $class: 'ch.supsi.Certification',
+    certificationID: 'resource:ch.supsi.Certification#',
     student: 'resource:ch.supsi.Student#',
     module: 'resource:ch.supsi.Module#',
     grade : 0
@@ -44,14 +44,15 @@ export class CertificationDetailComponent implements OnInit {
           
           this.getStudent();
           this.getModule();
-
-          this.certificationData.oldCertification = 'resource:ch.supsi.Certification#' + this.route.snapshot.params['id'];
+          
+          //this.certificationData.oldCertification = 'resource:ch.supsi.Certification#' + this.route.snapshot.params['id'];
 
           this.certificationData.student = this.certification.student;
           this.certificationData.module = this.certification.module;
           this.certificationData.grade = this.certification.grade;
 
-          this.certificationDataToDelete.certification =this.certificationData.oldCertification;
+          this.certificationData.certificationID=this.route.snapshot.params['id'];
+          this.certificationDataToDelete.certification ='resource:ch.supsi.Certification#' + this.route.snapshot.params['id'];
         });
       }
     })

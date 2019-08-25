@@ -50,5 +50,8 @@ export class StudentsService {
   getStudyPlan(id){
     return this.supsiService.getElement("StudyPlan",id);
   }
+  getCertification(id){
+    return this.supsiService.getElement("CertificationPerStudent",id);
+  }
 
 }

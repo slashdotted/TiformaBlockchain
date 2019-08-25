@@ -26,8 +26,13 @@
           <i class="material-icons">beenhere</i><span>Certificazione</span></a></li>
       <li class="nav-item"><a class="nav-link" [routerLinkActive]="['active']" routerLink="/search">
           <i class="material-icons">search</i><span>Ricerca</span></a></li>
-      <li class="nav-item align-items-end ml-auto"><a class="nav-link" href="http://localhost:3000/auth/github">
-          <i class="material-icons">lock</i><span>Sign with github</span></a></li>
+      <li class="nav-item" *ngIf="isLogged()" (click)="logout()"><a class="nav-link">
+        <i class="material-icons">lock_open</i><span>Logout</span></a></li>
+      <li class="nav-item" *ngIf="isAdmin()" (click)="router.navigate(['/register']);"><a class="nav-link">
+            <i class="material-icons">check_circle_outline</i><span>Register</span></a></li>
+            
+      <!--<li class="nav-item align-items-end ml-auto"><a class="nav-link" href="http://localhost:3000/auth/github">
+                              <i class="material-icons">lock</i><span>Sign with github</span></a></li>-->
     </ul>
   </div>
 </nav>

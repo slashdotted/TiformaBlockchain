@@ -19,7 +19,8 @@ export class CertificationService {
   }
 
   createCertification(certificationData) {
-    return this.supsiService.operationToElement("Create" + this.base, certificationData);
+
+    return this.supsiService.operationToElement(this.base, certificationData);
   }
 
   deleteCertification(certificationData) {
@@ -27,7 +28,8 @@ export class CertificationService {
   }
 
   updateCertification(certificationData) {
-    return this.supsiService.operationToElement("Update" + this.base, certificationData);
+    console.log(certificationData);
+    return this.supsiService.updateElement(this.base,certificationData.certificationID, certificationData);
   }
 
 }

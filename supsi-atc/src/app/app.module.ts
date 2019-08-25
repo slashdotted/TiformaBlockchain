@@ -1,8 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule ,HTTP_INTERCEPTORS} from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
+import { JwtModule } from '@auth0/angular-jwt';
 
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
@@ -10,14 +11,21 @@ import { ContainerComponent } from './container/container.component';
 import { LoadingModule } from './loading/loading.module';
 
 import { UploadModule } from './upload/upload.module';
-import { LoginComponent } from './login/login.component'
+import { LoginComponent } from './login/login.component';
+import { AuthGuard } from './guards/auth-guard.service';
+import { RegisterComponent } from './register/register.component';
+import { MyInterceptor } from './interceptor/error-interceptor';
+import { ErrorComponent } from './error/error.component';
+import { ListCertificationStudentComponent } from './list-certification-student/list-certification-student.component';
 
-
+export function tokenGetter(){
+  return localStorage.getItem('access_token');
+}
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent, 
-    ContainerComponent, LoginComponent,
+    ContainerComponent, LoginComponent, RegisterComponent, ErrorComponent, ListCertificationStudentComponent,
   ],
   imports: [
     BrowserModule,
@@ -25,9 +33,20 @@ import { LoginComponent } from './login/login.component'
     FormsModule,
     AppRoutingModule,
     LoadingModule,
-    UploadModule
+    UploadModule,
+    JwtModule.forRoot({
+      config:{
+        tokenGetter: tokenGetter
+      }
+    })
   ],
-  providers: [],
+  providers: [AuthGuard,
+  {
+    provide: HTTP_INTERCEPTORS, 
+    useClass: MyInterceptor,
+    multi: true
+  }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

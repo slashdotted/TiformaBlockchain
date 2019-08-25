@@ -1,0 +1,35 @@
+<br>
+<div class="col-sm-12 my-auto">
+  <div class="container bg-light">
+    <form class="form-signin">
+      <div class="form-label-group">
+        <label for="name">Name</label>
+        <input [(ngModel)]='user.name' id="name" type="text" class="form-control" placeholder="Name"
+          [ngModelOptions]="{standalone: true}">
+      </div>
+      <div class="form-label-group">
+        <label for="surname">Surname</label>
+        <input [(ngModel)]='user.surname' id="surname" type="text" class="form-control" placeholder="Surname"
+          [ngModelOptions]="{standalone: true}">
+      </div>
+      <div class="form-label-group">
+        <label for="email">Email</label>
+        <input [(ngModel)]='user.username' id="email" type="email" class="form-control" placeholder="Enter Email"
+          [ngModelOptions]="{standalone: true}">
+      </div>
+      <div class="form-label-group">
+        <label for="password">Password</label>
+        <input [(ngModel)]='user.password' id="password" type="password" class="form-control" placeholder="Password"
+          [ngModelOptions]="{standalone: true}">
+      </div>
+      <div class="form-label-group">
+        <label for="role">Ruolo</label>
+        <select required [(ngModel)]="user.role" class="form-control" id="role"  [ngModelOptions]="{standalone: true}">
+          <option *ngFor="let r of roles" [ngValue]="r">{{r}}</option>
+        </select>
+      </div>
+      <br>
+      <button class="btn btn-primary" (click)='register()'>Register</button>
+    </form>
+  </div>
+</div>

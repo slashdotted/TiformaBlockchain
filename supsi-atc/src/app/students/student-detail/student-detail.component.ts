@@ -3,6 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Student, StudyPlan } from 'src/app/ch.supsi';
 import { StudentsService } from '../students.service';
 import { UploadModule } from '../../upload/upload.module'
+import { HttpClient } from '@angular/common/http';
+import { Certification } from './ch.certification';
 
 @Component({
   selector: 'app-student-detail',
@@ -32,6 +34,7 @@ export class StudentDetailComponent implements OnInit {
     "Exmatricolato",
     "Ospite"
   ]
+  private certification:Certification[]=[];
 
   // Oggetto bidirezionale che viene modificato nel form nell'HTML
   // Oggetto di tipo ch.supsi.UpdateStudent -> Oggetto JSON per la transazione 
@@ -57,18 +60,27 @@ export class StudentDetailComponent implements OnInit {
     student: "resource:ch.supsi.Student#"
   }
 
+  private isCertificationVisible:boolean=false;
+
   constructor(
     private route: ActivatedRoute,
-    private studentsService: StudentsService
+    private studentsService: StudentsService,
+    private http: HttpClient
   ) { }
 
   ngOnInit() {
+    this.isCertificationVisible=false;
     this.loading = false;
     this.upload=false;
     this.studyplans = {};
+    
+
+
 
     this.route.params.subscribe((parms: any) => {
       if (parms.id) {
+
+
 
         // Richiesta rest asincrona per creare la lista delle formazioni -> per gestire la select list nell'HTML
         this.studentsService.getStudyPlans().subscribe((sp : StudyPlan[]) => {
@@ -94,10 +106,21 @@ export class StudentDetailComponent implements OnInit {
           this.studentData.id=this.student.contactID;
           console.log(this.studentData.id);
           this.studentDataToDelete.student = 'resource:ch.supsi.Student#'+this.route.snapshot.params['id'];
+          
+          /*this.http.get("http://localhost:8080/CertificationPerStudent/"+this.route.snapshot.params['id']).subscribe((res: Certification[])=>{
+            this.certification=res;
+          });*/
+
+         
+        });
+        
+        this.studentsService.getCertification(this.route.snapshot.params['id']).subscribe((data:Certification[])=>{
+          this.certification=data;
+          console.log(this.certification);
         });
       }
     });
-
+    
   }
 
   // Metodo per l'aggiornamento di uno studente
@@ -197,5 +220,8 @@ export class StudentDetailComponent implements OnInit {
     let year = date.split('-')[0];
 
     return year+"-"+month+"-"+day;
+  }
+  showCertifications(){
+    this.isCertificationVisible=!this.isCertificationVisible;
   }
 }

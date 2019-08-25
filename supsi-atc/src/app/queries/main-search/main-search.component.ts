@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
 import *  as $ from 'jquery';
-import { RestService } from 'src/app/rest.service';
-import { Student } from 'src/app/ch.supsi';
+import { RestService } from '../../rest.service';
+import { Student } from '../../ch.supsi';
 
 @Component({
   selector: 'app-main-search',
@@ -144,230 +144,104 @@ export class MainSearchComponent implements OnInit {
   }
   
   findStudentsByName(){
-    let allStudents = [];
-   this.restService.getAll('Student').subscribe(students => {
-     allStudents = students;
-     this.found = [];
-
-     for(let i = 0; i<allStudents.length; i++){
-       if(allStudents[i].name.includes(this.searchValue)){
-         this.found.push(allStudents[i]);
-       }
-     }
+   this.restService.getStudentsByName(this.searchValue.toString()).subscribe(students => {
+     this.found = students;
     });
   }
 
   findStudentsBySurname(){
-    let allStudents = [];
-   this.restService.getAll('Student').subscribe(students => {
-     allStudents = students;
-     this.found = [];
-
-     for(let i = 0; i<allStudents.length; i++){
-       if(allStudents[i].surname.includes(this.searchValue)){
-         this.found.push(allStudents[i]);
-       }
-     }
+    
+   this.restService.getStudentsBySurname(this.searchValue.toString()).subscribe(students => {
+    this.found = students;
     });
   }
 
-
   findStudentsBySerialNumber(){
-    let allStudents = [];
-   this.restService.getAll('Student').subscribe(students => {
-     allStudents = students;
-     this.found = [];
-
-     for(let i = 0; i<allStudents.length; i++){
-       if(allStudents[i].serialNumber.toString().includes(this.searchValue.toString())){
-         this.found.push(allStudents[i]);
-       }
-     }
+    
+   this.restService.getStudentsBySerialNumber(this.searchValue.toString()).subscribe(students => {
+    this.found = students;
     });
   }
 
   findDepartmentByName(){
-    let allDepartments = [];
-   this.restService.getAll('Department').subscribe(departments => {
-    allDepartments = departments;
-     this.found = [];
+    
+   this.restService.getDepartmentsByName(this.searchValue.toString()).subscribe(departments => {
+    this.found = departments;
+     
 
-     for(let i = 0; i<allDepartments.length; i++){
-       if(allDepartments[i].name.includes(this.searchValue)){
-         this.found.push(allDepartments[i]);
-       }
-     }
     });
   }
 
   findCoursesByName(){
-    let allCourses = [];
-   this.restService.getAll('Course').subscribe(courses => {
-    allCourses = courses;
-     this.found = [];
-
-     for(let i = 0; i<allCourses.length; i++){
-       if(allCourses[i].name.includes(this.searchValue)){
-         this.found.push(allCourses[i]);
-       }
-     }
+    
+   this.restService.getCoursesByName(this.searchValue.toString()).subscribe(courses => {
+    this.found = courses;
     });
   }
 
-  findCoursesByCourseCode(){
-    let allCourses = [];
-   this.restService.getAll('Course').subscribe(courses => {
-    allCourses = courses;
-     this.found = [];
-
-     for(let i = 0; i<allCourses.length; i++){
-       if(allCourses[i].courseCode.toString().includes(this.searchValue.toString())){
-         this.found.push(allCourses[i]);
-       }
-     }
+  findCoursesByCourseCode(){ 
+    this.restService.getCoursesByCourseCode(this.searchValue.toString()).subscribe(courses => {
+    this.found= courses;
     });
   }
 
   findModulesByName(){
-    let allModules = [];
-   this.restService.getAll('Module').subscribe(modules => {
-    allModules = modules;
-     this.found = [];
-
-     for(let i = 0; i<allModules.length; i++){
-       if(allModules[i].name.includes(this.searchValue)){
-         this.found.push(allModules[i]);
-       }
-     }
+   
+   this.restService.getModulesByName(this.searchValue.toString()).subscribe(modules => {
+    this.found  = modules;
     });
   }
 
   findModulesByModuleCode(){
-    let allModules = [];
-   this.restService.getAll('Module').subscribe(modules => {
-    allModules = modules;
-     this.found = [];
-
-     for(let i = 0; i<allModules.length; i++){
-       if(allModules[i].moduleCode.toString().includes(this.searchValue.toString())){
-         this.found.push(allModules[i]);
-       }
-     }
+    
+   this.restService.getModulesByModuleCode(this.searchValue.toString()).subscribe(modules => {
+    this.found = modules;
     });
   }
 
   findStudyPlansByName(){
-    let allStudyPlans = [];
-    this.restService.getAll('StudyPlan').subscribe(studyPlans => {
-      allStudyPlans = studyPlans;
-      this.found = [];
- 
-      for(let i = 0; i<allStudyPlans.length; i++){
-        if(allStudyPlans[i].name.includes(this.searchValue)){
-          this.found.push(allStudyPlans[i]);
-        }
-      }
+   
+    this.restService.getStudyPlanByName(this.searchValue.toString()).subscribe(studyPlans => {
+      this.found = studyPlans;
      });
   }
 
   findStudyPlansByModuleCode(){
-    let allStudyPlans = [];
-    this.restService.getAll('StudyPlan').subscribe(studyPlans => {
-      allStudyPlans = studyPlans;
-      this.found = [];
- 
-      for(let i = 0; i<allStudyPlans.length; i++){
-        for(let j = 0; j<allStudyPlans[i].modules.length; j++){
-          
-          if(allStudyPlans[i].modules[j].split('#')[1].includes(this.searchValue)){
-            this.found.push(allStudyPlans[i]);
-          }
-        }
-      }
+  
+    this.restService.getStudentModulesByModuleCode(this.searchValue.toString()).subscribe(studyPlans => {
+      this.found = studyPlans;
+      
      });
   }
 
   findSemestersByName(){
-    let allSemesters = [];
-    this.restService.getAll('Semester').subscribe(semesters => {
-      allSemesters = semesters;
-      this.found = [];
- 
-      for(let i = 0; i<allSemesters.length; i++){
-        if(allSemesters[i].name.includes(this.searchValue)){
-          this.found.push(allSemesters[i]);
-        }
-      }
+    
+    this.restService.getSemestersByName(this.searchValue.toString()).subscribe(semesters => {
+      this.found = semesters;
      });
   }
 
   findSemestersByModuleCode(){
-    let allSemesters = [];
-    this.restService.getAll('Semester').subscribe(semesters => {
-      allSemesters = semesters;
-      this.found = [];
+    
+    this.restService.getSemestersByModuleCode(this.searchValue.toString()).subscribe(semesters => {
+      this.found = semesters;
+       
  
-      for(let i = 0; i<allSemesters.length; i++){
-        for(let j = 0; j<allSemesters[i].modules.length; j++){
-          
-          
-          let allStudentModules = [];
-          this.restService.getAll('StudentModule').subscribe(modules =>{
-            allStudentModules = modules;
-
-            for(let k = 0; k<allStudentModules.length; k++){
-
-              console.log(allStudentModules[k].studentModuleID)
-              console.log(allSemesters[i].modules[j].split('#')[1])
-              console.log(this.searchValue)
-
-              if(allStudentModules[k].studentModuleID === allSemesters[i].modules[j].split('#')[1]
-                && allStudentModules[k].module.split('#')[1] === this.searchValue){
-                this.found.push(allSemesters[i]);
-              }
-            }
-
-          });
-
-
-        }
-      }
+     
      });
   }
 
   findCertificationsByStudentName(){
-    let allCertifications = [];
-    this.restService.getAll('Certification').subscribe(certifications => {
-      allCertifications = certifications;
-      this.found = [];
- 
-      for(let i = 0; i<allCertifications.length; i++){
-
-        this.restService.getObject('Student',allCertifications[i].student.toString().split('#')[1]).subscribe(student =>{
-          if(student.name.includes(this.searchValue)){
-            this.found.push(allCertifications[i]);
-          }
-        })
-
-      }
+    
+    this.restService.getCertificationByStudentName(this.searchValue.toString()).subscribe(certifications => {
+      this.found = certifications;
      });
   }
 
   findCertificationsByStudentSurname(){
-    let allCertifications = [];
-    this.restService.getAll('Certification').subscribe(certifications => {
-      allCertifications = certifications;
-      this.found = [];
- 
-      for(let i = 0; i<allCertifications.length; i++){
-
-        this.restService.getObject('Student',allCertifications[i].student.toString().split('#')[1]).subscribe(student =>{
-          if(student.surname.includes(this.searchValue)){
-            this.found.push(allCertifications[i]);
-          }
-        })
-
-      }
+    
+    this.restService.getCertificationByStudentSurname(this.searchValue.toString()).subscribe(certifications => {
+      this.found = certifications;
      });
   }
 

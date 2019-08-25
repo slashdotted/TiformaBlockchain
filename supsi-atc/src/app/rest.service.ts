@@ -8,14 +8,18 @@ import { map, catchError, tap } from 'rxjs/operators';
 })
 export class RestService {
 
-  endpoint = 'http://localhost:3000/api/';
-  queriesEndpoint = 'http://localhost:3000/api/queries/';
-  httpOptions = {
+  endpoint = 'http://localhost:8080/';
+  queriesEndpoint = 'http://localhost:8080/queries/';
+  static httpOptions = {
     headers: new HttpHeaders({
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      "Authorization":"Bearer "+localStorage.getItem("access_token")
     })
   };
-
+  /*private static header_object = new HttpHeaders().set("Authorization","Bearer "+localStorage.getItem("access_token"));
+  private static header_options={
+    headers: RestService.header_object
+  };*/
   constructor(private http: HttpClient) { }
 
   private extractData(res: Response) {
@@ -23,49 +27,101 @@ export class RestService {
     return body || {};
   }
 
+  static update(){
+    this.httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        "Authorization":"Bearer "+localStorage.getItem("access_token")
+      })
+    };
+  }
   getAll(baseType): Observable<any> {
-    return this.http.get(this.endpoint + baseType).pipe(
+    return this.http.get(this.endpoint + baseType,RestService.httpOptions).pipe(
       map(this.extractData));
   }
 
   getStudentsByName(name): Observable<any>{
-    return this.http.get(this.queriesEndpoint+'selectStudentByName?paramName='+name).pipe(
+    return this.http.get(this.queriesEndpoint+'selectStudentByName?paramName='+name,RestService.httpOptions).pipe(
       map(this.extractData));
   }
 
   getStudentsBySurname(surname): Observable<any>{
-    return this.http.get(this.queriesEndpoint+'selectStudentsBySurname?paramSurname='+surname).pipe(
+    return this.http.get(this.queriesEndpoint+'selectStudentsBySurname?paramSurname='+surname,RestService.httpOptions).pipe(
+      map(this.extractData));
+  }
+  getStudentsBySerialNumber(serialNumber):Observable<any>{
+    return this.http.get(this.queriesEndpoint+'selectStudentsBySerialNumber?paramSerialNumber='+serialNumber,RestService.httpOptions).pipe(
+      map(this.extractData));
+  }
+
+  getDepartmentsByName(name):Observable<any>{
+    return this.http.get(this.queriesEndpoint+'selectDepartmentByName?paramName='+name,RestService.httpOptions).pipe(
       map(this.extractData));
   }
 
   createStudent(student): Observable<any>{
-    return this.http.post(this.endpoint+"CreateStudent",student).pipe(map(this.extractData));
+    return this.http.post(this.endpoint+"CreateStudent",student,RestService.httpOptions).pipe(map(this.extractData));
   }
 
   getCoursesByName(courseName) : Observable<any>{
-    return this.http.get(this.queriesEndpoint+'selectCoursesByName?paramName='+courseName);
+    return this.http.get(this.queriesEndpoint+'selectCoursesByName?paramName='+courseName,RestService.httpOptions).pipe(
+      map(this.extractData));
+  }
+
+  getCoursesByCourseCode(courseCode) : Observable<any>{
+    return this.http.get(this.queriesEndpoint+'selectCoursesByCourseCode?paramCourseCode='+courseCode,RestService.httpOptions).pipe(
+      map(this.extractData));
   }
 
   getModulesByName(moduleName) : Observable <any>{
-    return this.http.get(this.queriesEndpoint+'selectModulesByName?paramName='+moduleName);
+    return this.http.get(this.queriesEndpoint+'selectModulesByName?paramName='+moduleName,RestService.httpOptions).pipe(
+      map(this.extractData));
+  }
+  getModulesByModuleCode(moduleCode) : Observable <any>{
+    return this.http.get(this.queriesEndpoint+'selectModulesByModuleCode?paramModuleCode='+moduleCode,RestService.httpOptions).pipe(
+      map(this.extractData));
   }
 
-  getStudentModulesByName(studentModuleName) : Observable<any>{
-    return this.http.get(this.queriesEndpoint+'selectStudyPlanByName?paramName='+studentModuleName);
+  getStudyPlanByName(studyplanName) : Observable<any>{
+    return this.http.get(this.queriesEndpoint+'selectStudyPlanByName?paramstudyplanName='+studyplanName,RestService.httpOptions).pipe(
+      map(this.extractData));
+  }
+
+  getStudentModulesByModuleCode(studentModuleCode) : Observable<any>{
+    return this.http.get(this.queriesEndpoint+'selectStudyPlanByModuleCode?paramModuleCode='+studentModuleCode,RestService.httpOptions).pipe(
+      map(this.extractData));
   }
 
   getSemestersByName(semesterName) : Observable<any>{
-    return this.http.get(this.queriesEndpoint+'selectSemestersByName?paramName='+semesterName);
+    return this.http.get(this.queriesEndpoint+'selectSemestersByName?paramName='+semesterName,RestService.httpOptions).pipe(
+      map(this.extractData));
   }
 
+  getSemestersByModuleCode(semesterModuleCode) : Observable<any>{
+    return this.http.get(this.queriesEndpoint+'selectSemestersByModuleCode?paramModuleCode='+semesterModuleCode,RestService.httpOptions).pipe(
+      map(this.extractData));
+  }
+ getCertificationByStudentName(studentName){
+  return this.http.get(this.queriesEndpoint+'selectCertificationByStudentName?paramStudentName='+studentName,RestService.httpOptions).pipe(
+    map(this.extractData));
+ }
+ getCertificationByStudentSurname(studentSurname){
+  return this.http.get(this.queriesEndpoint+'selectCertificationByStudentSurame?paramStudentSurname='+studentSurname,RestService.httpOptions).pipe(
+    map(this.extractData));
+ }
+
+ getCertificationByStudentModuleCode(moduleCode){
+  return this.http.get(this.queriesEndpoint+'selectCertificationByModuleCode?paramModuleCode='+moduleCode,RestService.httpOptions).pipe(
+    map(this.extractData));
+ }
   getObject(baseType, id): Observable<any> {
-    return this.http.get(this.endpoint + baseType + '/' + id).pipe(
+    return this.http.get(this.endpoint + baseType + '/' + id,RestService.httpOptions).pipe(
       map(this.extractData));
   }
 
   addObject(baseType, obj): Observable<any> {
     console.log(obj);
-    return this.http.post<any>(this.endpoint + baseType, JSON.stringify(obj), this.httpOptions).pipe(
+    return this.http.post<any>(this.endpoint + baseType, JSON.stringify(obj), RestService.httpOptions).pipe(
       catchError(this.handleError<any>('addObject'))
     );
   }
@@ -85,13 +141,13 @@ export class RestService {
   }
 
   updateObject (baseType, id, object): Observable<any> {
-    return this.http.put(this.endpoint + baseType + '/' + id, JSON.stringify(object), this.httpOptions).pipe(
+    return this.http.put(this.endpoint + baseType + '/' + id, JSON.stringify(object), RestService.httpOptions).pipe(
       catchError(this.handleError<any>('updateObject'))
     );
   }
   
   deleteObject (baseType, id): Observable<any> {
-    return this.http.delete<any>(this.endpoint + baseType + '/' + id, this.httpOptions).pipe(
+    return this.http.delete<any>(this.endpoint + baseType + '/' + id, RestService.httpOptions).pipe(
       //tap(_ => console.log(`deleted product id=${id}`)),
       catchError(this.handleError<any>('deleteProduct'))
     );

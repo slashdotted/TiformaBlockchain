@@ -18,7 +18,7 @@ export class CertificationNewComponent implements OnInit {
   private loading: boolean;
 
   @Input() certificationData: any = {
-    $class: 'ch.supsi.CreateCertification',
+    $class: 'ch.supsi.Certification',
     certificationID : '',
     student: '',
     module: '',

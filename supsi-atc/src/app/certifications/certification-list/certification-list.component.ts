@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CertificationService} from '../certifications.service';
-import { Certification, Student } from 'src/app/ch.supsi';
-import { StudentsService } from 'src/app/students/students.service';
+import { Certification, Student } from '../../ch.supsi';
+import { StudentsService } from '../../students/students.service';
 
 @Component({
   selector: 'app-certification-list',
