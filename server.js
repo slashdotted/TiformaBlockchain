@@ -5,7 +5,6 @@ var cors = require('cors');
 var upload = require('./upload');
 var query = require('./query-server');
 const fs = require('fs');
-//var accessToken = '?access_token=yvB5imJivOSf5gIHr6a0J1cVSwF6LWK9ppfIfxNUAMcpjPbnvve9KsmMUXzt7gfJ';
 var mysql = require('mysql');
 var jwt = require('jsonwebtoken');
 const { secret } = require('./config.json');
@@ -17,6 +16,11 @@ var queriesEndpoint = 'http://localhost:3000/api/queries/';
 var con;
 var  expressJwt = require ('express-jwt');
 var _ = require('underscore');
+var crypt = require ('./crypt');
+var api = require('./api');
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 //configuro l'express jwt
 app.use(
     expressJwt({
@@ -25,7 +29,7 @@ app.use(
     }).unless({path:['/login']})
 );
 
-//ruoti disponibili al momento
+//ruoli disponibili al momento
 var view_operation_roles = ['Admin', 'Professore','Studente'];
 var modify_operation_roles = ['Admin'];
 
@@ -97,7 +101,40 @@ function getUserFromToken(t) {
     
     return jwt.verify(t.split(' ')[1], {secret}.secret, { complete: true }).payload;
 }
+app.get('/users',authorize('Admin'),function(req,res){
+    
+    var token = getUserFromToken(req.headers.authorization);
+    var obj = {
+        operation: req.originalUrl,
+        success: false,
+        date: new Date().toISOString(),
+        user: token.user.username
+    }
+    con.query("SELECT username FROM user",function (err,result,fields){
+        if(err) throw err;
+        obj.success=true;
+        res.send(result);
+    });
+    printOperation(obj);
+});
 
+app.get('/users/delete/[a-zA-Z]+',authorize('Admin'),function(req,res){
+    console.log("sono entrato dentro il table");
+    var token = getUserFromToken(req.headers.authorization);
+    var obj = {
+        operation: req.originalUrl,
+        success: false,
+        date: new Date().toISOString(),
+        user: token.user.username
+    }
+    var usernameToDelete=req.originalUrl.split('/')[3];
+    con.query("DELETE FROM user WHERE username='"+ usernameToDelete +"'",function (err,result,fields){
+        if(err) throw err;
+        obj.success=true;
+        res.status(200).send();
+    });
+    printOperation(obj);
+});
 
 app.get('/queries/selectStudentByName?[a-zA-Z]+', authorize(view_operation_roles),query.getStudentsByName);
 app.get('/queries/selectStudentsBySurname?[a-zA-Z]+', authorize(view_operation_roles),query.getStudentsBySurname);
@@ -252,40 +289,33 @@ app.post('/register',authorize('Admin'),function (req,res){
         user: token.user.username
     }
     if (checkTokenValidity(req.headers.authorization)) {
-        console.log('sono entrato nella sezione di registrazione');
-        //creare nuove credenziali nel DB utilizzando le query e dopo rimandare al login
-        console.log(req.body.role);
-        con.query("INSERT INTO user VALUES ('" + req.body.name + "','" + req.body.surname + "','" + req.body.username + "','" + req.body.password + "','" + req.body.role + "');",
+        console.log('REGISTRAZIONE IN CORSO ...');
+        var salt = crypt.generateSalt();
+        var hashedPassword=crypt.crypt(req.body.password,salt);
+        con.query("INSERT INTO user VALUES ('" + req.body.name + "','" + req.body.surname + "','" + req.body.username + "','" + hashedPassword.passwordHash + "','" + req.body.role + "','" + hashedPassword.salt + "');",
             function (err, result, fields) {
                 if (err) throw err;
                 obj.success=true;
-                console.log("record insert");
+                console.log("   RECORD INSERITO");
                 
             });
 
     }
-    
-    console.log(obj.success);
     printOperation(obj);
 });
-app.post('/login', function (req, res) {
-    console.log('sono entrato nella sezione di login');
 
-    //problema soffre di sql injection
+app.post('/login', function (req, res) {
+    console.log('LOGIN IN CORSO ...');
     con.query("SELECT * FROM user where username='" + req.body.username + "'", function (err, result, fields) {
         if (err) throw err;
-        console.log("RISULTATO DELLA QUERY: " + JSON.stringify(result));
         if (result.length > 0) {
-
-            var user = result[0]; //cercare di prendere l'utente con il username giusto e verificare la password soltanto.
-            if (user.password === req.body.password && result.length > 0) {//se ci sono risultati e la password è esatta
-
+            var user = result[0]; 
+            var hashedPassword = crypt.crypt(req.body.password,user.salt);
+            if (user.password === hashedPassword.passwordHash) {
                 var claims = user;
-
                 var token = jwt.sign({ user: claims }, { secret }.secret, { expiresIn: '2h' });
-
-                console.log("RISULTATO DEL VERIFY NEL /LOGIN" + JSON.stringify(jwt.verify(token, { secret }.secret, { complete: true }).payload));
                 res.send({ token });
+                console.log("   LOGIN AVVENUTO CON SUCCESSO.")
             } else {
                 res.status(400).send();
             }
