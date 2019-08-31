@@ -2,7 +2,7 @@ var express = require('express');
 var http = require('http');
 var bodyParser = require('body-parser');
 var cors = require('cors');
-var upload = require('./upload');
+var upload = require('./attachment');
 var query = require('./query-server');
 const fs = require('fs');
 //var accessToken = '?access_token=yvB5imJivOSf5gIHr6a0J1cVSwF6LWK9ppfIfxNUAMcpjPbnvve9KsmMUXzt7gfJ';
@@ -17,6 +17,8 @@ var queriesEndpoint = 'http://localhost:3000/api/queries/';
 var con;
 var  expressJwt = require ('express-jwt');
 var _ = require('underscore');
+var authFunction = require ('./auth-functions');
+
 //configuro l'express jwt
 app.use(
     expressJwt({
@@ -24,33 +26,14 @@ app.use(
 
     }).unless({path:['/login']})
 );
-function printOperation(text) {
-    fs.readFile('log/log.json', function (err, data) {
-        var json = JSON.parse(data)
-        json.push(text);
-    
-        fs.writeFile("log/log.json", JSON.stringify(json))
-    })
-}
-function getUserFromToken(t) {
-    
-    return jwt.verify(t.split(' ')[1], {secret}.secret, { complete: true }).payload;
-}
 
-function like(array,key){
-    var values=[];
-    for(var i in array){
-        if(array[i].includes(key)){
-            values.push(array[i]);
-        }
-    }
-    return values;
-}
+
+
 module.exports = {
     getStudentsByName: function (req, res) {
         var searchValue=req.query.paramName;
         console.log(searchValue);
-        var token = getUserFromToken(req.headers.authorization);
+        var token = authFunction.getUserFromToken(req.headers.authorization);
         var obj = {
             operation: req.originalUrl,
             success: false,
@@ -71,13 +54,13 @@ module.exports = {
             });
         });
         obj.success = true;
-        printOperation(obj);
+        authFunction.printOperation(obj);
     },
 
     getStudentsBySurname: function (req, res) {
         var searchValue=req.query.paramSurname;
         console.log(searchValue);
-        var token = getUserFromToken(req.headers.authorization);
+        var token = authFunction.getUserFromToken(req.headers.authorization);
         var obj = {
             operation: req.originalUrl,
             success: false,
@@ -98,13 +81,13 @@ module.exports = {
             });
         });
         obj.success = true;
-        printOperation(obj);
+        authFunction.printOperation(obj);
     },
 
     getStudentsBySerialNumber :function (req, res) {
         var searchValue=req.query.paramSerialNumber;
         console.log(searchValue);
-        var token = getUserFromToken(req.headers.authorization);
+        var token = authFunction.getUserFromToken(req.headers.authorization);
         var obj = {
             operation: req.originalUrl,
             success: false,
@@ -125,13 +108,13 @@ module.exports = {
             });
         });
         obj.success = true;
-        printOperation(obj);
+        authFunction.printOperation(obj);
     },
 
     getDepartmentsByName: function (req, res) {
         var searchValue=req.query.paramName;
         console.log(searchValue);
-        var token = getUserFromToken(req.headers.authorization);
+        var token = authFunction.getUserFromToken(req.headers.authorization);
         var obj = {
             operation: req.originalUrl,
             success: false,
@@ -152,13 +135,13 @@ module.exports = {
             });
         });
         obj.success = true;
-        printOperation(obj);
+        authFunction.printOperation(obj);
     },
 
     getCoursesByName: function (req, res) {
         var searchValue=req.query.paramName;
         console.log(searchValue);
-        var token = getUserFromToken(req.headers.authorization);
+        var token = authFunction.getUserFromToken(req.headers.authorization);
         var obj = {
             operation: req.originalUrl,
             success: false,
@@ -179,13 +162,13 @@ module.exports = {
             });
         });
         obj.success = true;
-        printOperation(obj);
+        authFunction.printOperation(obj);
     },
 
     getCoursesByCourseCode: function (req, res) {
         var searchValue=req.query.paramCourseCode;
         console.log(searchValue);
-        var token = getUserFromToken(req.headers.authorization);
+        var token = authFunction.getUserFromToken(req.headers.authorization);
         var obj = {
             operation: req.originalUrl,
             success: false,
@@ -206,13 +189,13 @@ module.exports = {
             });
         });
         obj.success = true;
-        printOperation(obj);
+        authFunction.printOperation(obj);
     },
 
     getModulesByName: function (req, res) {
         var searchValue=req.query.paramName;
         console.log(searchValue);
-        var token = getUserFromToken(req.headers.authorization);
+        var token = authFunction.getUserFromToken(req.headers.authorization);
         var obj = {
             operation: req.originalUrl,
             success: false,
@@ -233,13 +216,13 @@ module.exports = {
             });
         });
         obj.success = true;
-        printOperation(obj);
+        authFunction.printOperation(obj);
     },
 
     getModulesByModuleCode: function (req, res) {
         var searchValue=req.query.paramModuleCode;
         console.log(searchValue);
-        var token = getUserFromToken(req.headers.authorization);
+        var token = authFunction.getUserFromToken(req.headers.authorization);
         var obj = {
             operation: req.originalUrl,
             success: false,
@@ -260,13 +243,13 @@ module.exports = {
             });
         });
         obj.success = true;
-        printOperation(obj);
+        authFunction.printOperation(obj);
     },
 //formazione
     getStudentModulesByName: function (req, res) {
         var searchValue=req.query.paramstudyplanName;
         console.log(searchValue);
-        var token = getUserFromToken(req.headers.authorization);
+        var token = authFunction.getUserFromToken(req.headers.authorization);
         var obj = {
             operation: req.originalUrl,
             success: false,
@@ -287,12 +270,12 @@ module.exports = {
             });
         });
         obj.success = true;
-        printOperation(obj);
+        authFunction.printOperation(obj);
     },
 
     getStudentModulesByModuleCode: function (req, res) {
         var searchValue=req.query.paramModuleCode;
-        var token = getUserFromToken(req.headers.authorization);
+        var token = authFunction.getUserFromToken(req.headers.authorization);
         var obj = {
             operation: req.originalUrl,
             success: false,
@@ -315,13 +298,13 @@ module.exports = {
             });
         });
         obj.success = true;
-        printOperation(obj);
+        authFunction.printOperation(obj);
     },
 
     getSemestersByName: function (req, res) {
         var searchValue=req.query.paramName;
         console.log(searchValue);
-        var token = getUserFromToken(req.headers.authorization);
+        var token = authFunction.getUserFromToken(req.headers.authorization);
         var obj = {
             operation: req.originalUrl,
             success: false,
@@ -342,12 +325,12 @@ module.exports = {
             });
         });
         obj.success = true;
-        printOperation(obj);
+        authFunction.printOperation(obj);
     },
 
     getSemestersByModuleCode: function (req, res) {
         var searchValue=req.query.paramModuleCode;
-        var token = getUserFromToken(req.headers.authorization);
+        var token = authFunction.getUserFromToken(req.headers.authorization);
         var obj = {
             operation: req.originalUrl,
             success: false,
@@ -370,13 +353,13 @@ module.exports = {
             });
         });
         obj.success = true;
-        printOperation(obj);
+        authFunction.printOperation(obj);
 
     },
 
     getCertificationByStudentName :function (req, res) {
         var searchValue=req.query.paramStudentName;
-        var token = getUserFromToken(req.headers.authorization);
+        var token = authFunction.getUserFromToken(req.headers.authorization);
         var obj = {
             operation: req.originalUrl,
             success: false,
@@ -415,11 +398,11 @@ module.exports = {
             });
         });
         obj.success = true;
-        printOperation(obj);
+        authFunction.printOperation(obj);
     },
     getCertificationByStudentSurname : function (req, res) {
         var searchValue=req.query.paramStudentSurname;
-        var token = getUserFromToken(req.headers.authorization);
+        var token = authFunction.getUserFromToken(req.headers.authorization);
         var obj = {
             operation: req.originalUrl,
             success: false,
@@ -458,11 +441,11 @@ module.exports = {
             });
         });
         obj.success = true;
-        printOperation(obj);
+        authFunction.printOperation(obj);
     },
     getCertificationByStudentModuleCode : function (req, res) {
         var searchValue=req.query.paramModuleCode;
-        var token = getUserFromToken(req.headers.authorization);
+        var token = authFunction.getUserFromToken(req.headers.authorization);
         var obj = {
             operation: req.originalUrl,
             success: false,
@@ -485,7 +468,7 @@ module.exports = {
             });
         });
         obj.success = true;
-        printOperation(obj);
+        authFunction.printOperation(obj);
 
     }
 }
