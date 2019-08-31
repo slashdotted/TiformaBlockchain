@@ -5,6 +5,7 @@ import { StudentsService } from '../students.service';
 import { UploadModule } from '../../upload/upload.module'
 import { HttpClient } from '@angular/common/http';
 import { Certification } from './ch.certification';
+import { saveAs } from 'file-saver'
 
 @Component({
   selector: 'app-student-detail',
@@ -164,13 +165,15 @@ export class StudentDetailComponent implements OnInit {
 
   // Metodo per scaricare i file precedentemente caricati
   downloadFile(filename){
-    this.studentsService.downloadFile(filename,this.student.contactID).subscribe();
+    this.studentsService.downloadFile(filename,this.student.contactID).subscribe((data:any)=>{
+      var blob= new Blob([data],{ type: 'application/octet-stream' });
+      saveAs(blob,filename);
+    });
   }
  
   // Metodo per eliminare i file precedentemente caricati
   deleteAttachment(filename){
     this.studentsService.deleteAttachment(filename, this.student.contactID).subscribe();
-    
     window.location.reload();
   }
   // Metodo per la stampa 
@@ -190,10 +193,12 @@ export class StudentDetailComponent implements OnInit {
     document.querySelector('#nationality').appendChild(nationalityOption);
     document.querySelector('#birthday').setAttribute('value', this.formatDate());
     document.querySelector('#comment').innerHTML =  this.student.comment;
-    
+    this.isCertificationVisible=true;
     
     printContents = document.getElementById('studentDetail');
     printContents.removeChild(buttonGroup);
+    printContents.removeChild(document.querySelector('#rowAttachments'));
+    printContents.removeChild(document.querySelector('#formAttachments'));
     printContents = printContents.innerHTML;
 
     popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
@@ -209,7 +214,7 @@ export class StudentDetailComponent implements OnInit {
       </html>`
     );
     popupWin.document.close();
-
+    this.isCertificationVisible=false;
     window.location.reload();
   }
 

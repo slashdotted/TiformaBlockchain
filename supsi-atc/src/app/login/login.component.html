@@ -5,8 +5,8 @@
     <form class="form-signin  ">
       <h1>Login</h1>
       <div class="form-label-group">
-        <label for="email">Email</label>
-        <input [(ngModel)]='user.username' id="email" type="email" class="form-control" placeholder="Enter Email"
+        <label for="email">Email / Username</label>
+        <input [(ngModel)]='user.username' id="email" type="email" class="form-control" placeholder="Email / Username"
           [ngModelOptions]="{standalone: true}">
       </div>
       <div class="form-label-group">
@@ -15,7 +15,8 @@
           [ngModelOptions]="{standalone: true}">
       </div>
       <br>
-      <h6 *ngIf="error" class= "bg-danger text-white">Errore: email/password sono sbagliati</h6>
+      <h6 *ngIf="error" class= "bg-danger text-white">Errore: Username / password sono sbagliati</h6>
+      <h6 *ngIf="error"><a>Password dimenticata? contattare l'amministratore: admin-supsi-tiforma@gmail.com</a></h6>
       <div class="container">
         <div class="row">
           <div class="col">

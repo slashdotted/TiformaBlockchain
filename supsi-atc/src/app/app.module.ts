@@ -17,6 +17,7 @@ import { RegisterComponent } from './register/register.component';
 import { MyInterceptor } from './interceptor/error-interceptor';
 import { ErrorComponent } from './error/error.component';
 import { ListCertificationStudentComponent } from './list-certification-student/list-certification-student.component';
+import { ManagementUserComponent } from './management-user/management-user.component';
 
 export function tokenGetter(){
   return localStorage.getItem('access_token');
@@ -25,7 +26,7 @@ export function tokenGetter(){
   declarations: [
     AppComponent,
     NavbarComponent, 
-    ContainerComponent, LoginComponent, RegisterComponent, ErrorComponent, ListCertificationStudentComponent,
+    ContainerComponent, LoginComponent, RegisterComponent, ErrorComponent, ListCertificationStudentComponent, ManagementUserComponent,
   ],
   imports: [
     BrowserModule,

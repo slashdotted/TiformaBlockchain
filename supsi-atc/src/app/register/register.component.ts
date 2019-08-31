@@ -31,9 +31,9 @@ export class RegisterComponent implements OnInit {
   }
 
   register(){
-    //devo fare richiesta di registrazione
+    
     console.log(this.user);
     console.log(this.http.post(this.endpoint,this.user,this.header_options).subscribe());
-    
+    window.location.reload();
   }
 }

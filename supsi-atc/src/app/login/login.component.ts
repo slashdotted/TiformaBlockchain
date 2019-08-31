@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { SUPSIService } from '../supsi.service';
 import { RestService } from '../rest.service';
+import { ManagementUserComponent } from '../management-user/management-user.component';
 
 @Component({
   selector: 'app-login',
@@ -42,6 +43,7 @@ export class LoginComponent implements OnInit {
       localStorage.setItem('access_token', result.token);
       SUPSIService.update();
       RestService.update();
+      ManagementUserComponent.update();
       this.router.navigate(['/students']);//se non lo metto non fuziona la prima volta
       this.router.navigate(['/students']);
     })).subscribe(

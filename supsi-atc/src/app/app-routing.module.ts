@@ -5,13 +5,14 @@ import {LoginComponent} from './login/login.component';
 import {AuthGuard} from './guards/auth-guard.service';
 import {RegisterComponent} from './register/register.component'
 import {ErrorComponent} from './error/error.component'
+import { ManagementUserComponent } from './management-user/management-user.component';
 
 const routes: Routes = [
 
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component:LoginComponent},
   { path: 'register', component:RegisterComponent, canActivate:[AuthGuard]},
-  
+  { path: 'manageuser', component:ManagementUserComponent, canActivate:[AuthGuard]},
   { path: 'students', loadChildren: () => import('./students/students.module').then(m => m.StudentsModule) , canActivate:[AuthGuard]},
   { path: 'departments', loadChildren: () => import('./departments/departments.module').then(m => m.DepartmentsModule), canActivate:[AuthGuard] },
   { path: 'courses', loadChildren: () => import('./courses/courses.module').then(m => m.CoursesModule), canActivate:[AuthGuard] },

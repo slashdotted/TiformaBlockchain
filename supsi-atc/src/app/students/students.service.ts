@@ -28,10 +28,11 @@ export class StudentsService {
   }
 
   updateStudent(studentData) {
-    return this.supsiService.operationToElement("Update" + this.base, studentData);
+    return this.supsiService.updateElement(this.base, studentData.id,studentData);
   }
 
   deleteAttachment(filename,id){
+    
     return this.supsiService.getElements(id+"/Delete/"+filename);
   }
   

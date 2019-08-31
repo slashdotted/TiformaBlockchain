@@ -16,7 +16,8 @@ export class SUPSIService {
   constructor(private http: HttpClient) { }
 
   // Ritorna tutti gli elementi, esempio http://localhost:3000/api/Student
-  getElements(type: String) {    
+  getElements(type: String) {  
+    console.log(this.endpoint + type);
     return this.http.get(this.endpoint + type,SUPSIService.header_options);
   }
 
